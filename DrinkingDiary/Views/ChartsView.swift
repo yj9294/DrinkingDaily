@@ -21,8 +21,7 @@ struct Charts: Reducer {
         static func == (lhs: Charts.State, rhs: Charts.State) -> Bool {
             lhs.top == rhs.top &&
             lhs.left == rhs.left &&
-            lhs.right == rhs.right &&
-            lhs.ad == rhs.ad
+            lhs.right == rhs.right
         }
         
         @UserDefault(key: "record:list")
@@ -30,7 +29,6 @@ struct Charts: Reducer {
         var top: Top.State = .init()
         var left: Left.State = .init()
         var right: Right.State = .init()
-        var ad: GADNativeViewModel = .none
         
         mutating func updateLeftItems(_ item: Top.State.Item) {
             var target: [String] = []
@@ -256,12 +254,6 @@ struct ChartsView: View {
                     }
                 }.padding(.horizontal, 20).padding(.top, 32)
                 Spacer()
-                if viewStore.ad != .none {
-                    HStack{
-                        GADNativeView(model: viewStore.ad)
-                    }.frame(height: 124).padding(.horizontal, 20).padding(.bottom, 20)
-                }
-                
             }.background.toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {viewStore.send(.historyButtonTapped)}, label: {

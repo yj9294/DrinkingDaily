@@ -71,7 +71,6 @@ struct RootView: View {
             }).onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification), perform: { _ in
                 viewStore.send(.background(true))
                 viewStore.send(.launch(.stop))
-                viewStore.send(.launch(.dismissInterestialAD))
             })
         }
     }

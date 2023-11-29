@@ -7,7 +7,6 @@
 
 import SwiftUI
 import UIKit
-import GADUtil
 import ComposableArchitecture
 import AppTrackingTransparency
 
@@ -26,7 +25,6 @@ struct DrinkingDiaryApp: App {
         func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
             UITabBar.appearance().isHidden = true
             NotificationHelper.shared.register()
-            GADUtil.share.requestConfig()
             Task{
                 try await Task.sleep(nanoseconds:2_000_000_000)
                 Task.detached { @MainActor in

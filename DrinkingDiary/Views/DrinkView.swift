@@ -12,16 +12,13 @@ struct Drink: Reducer {
     struct State: Equatable {
         static func == (lhs: Drink.State, rhs: Drink.State) -> Bool {
             lhs.dailyGoal == rhs.dailyGoal &&
-            lhs.dailyDrink == rhs.dailyDrink &&
-            lhs.ad == rhs.ad
+            lhs.dailyDrink == rhs.dailyDrink
         }
         @UserDefault(key: "drink:goal")
         var dailyGoal: Int?
         @UserDefault(key: "record:list")
         var recordList: [Record.Model]?
-        
-        var ad: GADNativeViewModel = .none
-        
+                
         var dailyDrink: Int {
             (recordList ?? []).filter { model in
                 model.day == Date().day
@@ -52,11 +49,6 @@ struct DrinkView: View {
     var body: some View {
         WithViewStore(store, observe: {$0}) { viewStore in
             VStack{
-                if viewStore.ad != .none {
-                    HStack{
-                        GADNativeView(model: viewStore.ad)
-                    }.frame(height: 124).padding(.horizontal, 20).padding(.top, 20)
-                }
                 VStack{
                     Image("drink_icon").resizable().scaledToFit()
                     HStack{

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import GADUtil
 import ComposableArchitecture
 
 struct Launch: Reducer {
@@ -14,7 +13,7 @@ struct Launch: Reducer {
     @Dependency(\.continuousClock) var clock
     struct State: Equatable {
         var progress: Double = 0.0
-        var duration = 12.5
+        var duration = 2.5
         var onAppear = true
     }
     enum Action: Equatable {
@@ -23,23 +22,16 @@ struct Launch: Reducer {
         case stop
         case completion
         case progressing
-        case loadInterestialAD
-        case updateDuration
-        case showInterestialAD
-        case dismissInterestialAD
     }
     
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .start:
             state.progress = 0.0
-            state.duration = 12.5
+            state.duration = 2.5
             return .run { send in
                 for await _ in clock.timer(interval: .milliseconds(20)) {
                     await send(.progressing)
-                    if GADUtil.share.isLoaded(.interstitial) {
-                        await send(.updateDuration)
-                    }
                 }
             }.cancellable(id: CancelID.timer)
         case .progressing:
@@ -49,29 +41,13 @@ struct Launch: Reducer {
                 state.progress = 1.0
                 return .run { send in
                     await send(.stop)
-                    await send(.showInterestialAD)
+                    await send(.completion)
                 }
-            }
-        case .loadInterestialAD:
-            GADUtil.share.load(.interstitial)
-            GADUtil.share.load(.native)
-        case .showInterestialAD:
-            return .run { send in
-                await GADUtil.share.show(.interstitial)
-                await send(.completion)
             }
         case .completion:
             state.onAppear = false
-        case .updateDuration:
-            if state.progress > 0.23 {
-                state.duration = 0.25
-            }
         case .stop:
             return .cancel(id: CancelID.timer)
-        case .dismissInterestialAD:
-            return .run { send in
-                await GADUtil.share.dismiss()
-            }
         default:
             break
         }
@@ -96,7 +72,6 @@ struct LaunchView: View {
             }.background.onAppear{
                 if viewStore.onAppear {
                     viewStore.send(.start)
-                    viewStore.send(.loadInterestialAD)
                 }
             }
         }

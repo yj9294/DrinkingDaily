@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ComposableArchitecture
-import GADUtil
 
 enum GADShowPosition {
     case drink, charts, reminder
@@ -56,9 +55,7 @@ struct Home: Reducer {
                 case .drink(let action):
                     switch action {
                     case .dailyTargetButtonTapped:
-                        GADUtil.share.load(.interstitial)
                         return .run { send in
-                            await GADUtil.share.show(.interstitial)
                             await send(.pushDaily)
                         }
                     case .recordButtonTapped:
@@ -90,9 +87,7 @@ struct Home: Reducer {
                     switch state.path[id: id] {
                     case let .record(recordState):
                         state.updateRecordState(recordState.model)
-                        GADUtil.share.load(.interstitial)
                         return .run { send in
-                            await GADUtil.share.show(.interstitial)
                             await send(.pop)
                         }
                     default:

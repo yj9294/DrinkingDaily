@@ -11,8 +11,7 @@ import ComposableArchitecture
 struct Reminder: Reducer {
     struct State: Equatable {
         static func == (lhs: Reminder.State, rhs: Reminder.State) -> Bool {
-            lhs.items == rhs.items && lhs.alert == rhs.alert && lhs.date == rhs.date &&
-            lhs.ad == rhs.ad
+            lhs.items == rhs.items && lhs.alert == rhs.alert && lhs.date == rhs.date
         }
         
         let defaultItems = ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"]
@@ -20,7 +19,6 @@ struct Reminder: Reducer {
         var items: [String]?
         @PresentationState var alert: AlertState<Action.Alert>?
         @PresentationState var date: DateSelected.State?
-        var ad: GADNativeViewModel = .none
         mutating func remove(_ item: String) {
             items  = (items ?? defaultItems).filter({
                 $0 != item
@@ -103,11 +101,6 @@ struct ReminderView: View {
             VStack{
                 ContentView(store: store).padding(.all, 20)
                 Spacer()
-                if viewStore.ad != .none {
-                    HStack{
-                        GADNativeView(model: viewStore.ad)
-                    }.frame(height: 124).padding(.horizontal, 20).padding(.bottom, 20)
-                }
             }.toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {viewStore.send(.addButtonTapped)}, label: {
