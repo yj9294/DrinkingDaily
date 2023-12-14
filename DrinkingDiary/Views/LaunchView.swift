@@ -37,7 +37,7 @@ struct Launch: Reducer {
             return .run { send in
                 for await _ in clock.timer(interval: .milliseconds(20)) {
                     await send(.progressing)
-                    if GADUtil.share.isLoaded(.interstitial) {
+                    if GADUtil.share.isLoaded(.open) {
                         await send(.updateDuration)
                     }
                 }
@@ -53,11 +53,12 @@ struct Launch: Reducer {
                 }
             }
         case .loadInterestialAD:
+            GADUtil.share.load(.open)
             GADUtil.share.load(.interstitial)
             GADUtil.share.load(.native)
         case .showInterestialAD:
             return .run { send in
-                await GADUtil.share.show(.interstitial)
+                await GADUtil.share.show(.open)
                 await send(.completion)
             }
         case .completion:
